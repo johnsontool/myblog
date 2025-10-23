@@ -1,0 +1,124 @@
+---
+title: 'Navigation Website Implementation'
+date: '2024-01-15'
+tags: ['wordpress', 'navigation web']
+draft: false
+summary: 'A comprehensive guide to building navigation websites using WordPress, including installation, configuration, and theme customization.'
+layout: PostLayout
+images: ['/static/images/wordpress-index.png']
+---
+
+
+Example site based on this navigation theme: [https://nav.iowen.cn](https://nav.iowen.cn/)
+
+## Preparations before installing WordPress:
+
+1. Configure WordPress runtime environment:
+   - Install MySQL
+   - Install Apache2
+   - Install PHP
+   - Install connection libraries for Apache2, MySQL, and PHP
+
+Since WordPress needs to use the MySQL database, we'll enter MySQL as the root user to create a database for WordPress:
+
+Create database and user using MySQL root account:
+- Create database: `create database wordpressdb;`
+- Create user: `create user wordpressuser;`
+- Create password: `set password for wordpressuser="wordpress123";`
+- Grant database privileges to the newly created user: `grant all privileges on wordpressdb.* to wordpressuser;`
+
+## WordPress Installation and Configuration Process:
+
+### 1. Download and Copy WordPress
+
+First download WordPress version 4.4 or above:
+https://wordpress.org/wordpress-5.6.10.tar.gz
+
+Extract using command:
+
+```bash
+tar -zxvf wordpress-5.6.10.tar.gz
+```
+
+Copy all contents from WordPress to /var/www/html/:
+
+```bash
+sudo cp -r ./wordpress-5.6.10/*  /var/www/html/
+```
+
+Then grant permissions to /var/www/html/:
+
+```bash
+sudo chmod 777 /var/www/html/
+```
+
+### 2. Configure WordPress
+
+Run 127.0.0.1 in browser to enter WordPress configuration page.
+
+![Wordpress Configuration Page](/static/images/wordpress-index.png)
+
+*Figure 1: Configuration Initial Page*
+
+![Wordpress Database Setup](/static/images/wordpress-mysql.png)
+
+*Figure 2: Fill in database name, username and password, leave the other two as default*
+
+![Wordpress Installation](/static/images/wordpress-runinstall.png)
+
+*Figure 3: Installation Process*
+
+![Wordpress User Configuration](/static/images/wordpress-user.png)
+
+*Figure 4: WordPress username and password configuration*
+
+![Wordpress Admin Login](/static/images/wordpress-admin.png)
+
+*Figure 5: Login with username and password from Figure 4*
+
+Now entering 127.0.0.1 in the browser will take you to the WordPress homepage, which uses the default template:
+
+![Wordpress Homepage](/static/images/wordpress-page1.png)
+
+*Figure 6: WordPress homepage*
+
+### 3. Install New WordPress Template
+
+WordPress templates are mainly stored in the /wp-content/themes directory, and each template has its own folder.
+
+So you first need to place the template files you want to use under /themes, then enable the new template in the WordPress backend:
+
+- Log in to WordPress backend
+- Appearance -> Themes -> Find the template you want to enable and activate
+
+For example, the template we want to use: [GitHub - owen0o0/WebStack: WordPress Version WebStack Navigation Theme https://nav.iowen.cn](https://github.com/owen0o0/WebStack)
+
+After downloading using git clone and performing the above operations, finally enter 127.0.0.1 in the browser to get the following interface.
+
+![WebStack Template](/static/images/wordpress-webstack.png)
+
+*Figure 7: Using WebStack template*
+
+### 4. Simple Configuration for the New Template
+
+Below you can make simple customizations to the WebStack template in Figure 7, such as:
+
+- Remove the GitHub icon and link from the top right corner
+- Remove the "Beijing" weather from the top left corner
+- The search box in the middle seems a bit redundant, only keep the site search tags, delete other unnecessary items
+- Imitate [webstack demo site | Another WordPress Site (iotheme.cn)](http://webstack.iotheme.cn/) to add some example tabs and check the effects
+
+
+
+**References:**
+
+- [Installing and Deploying WordPress (Ubuntu) (ppmy.cn)](http://www.ppmy.cn/news/10976.html)
+- [How to install wordpress templates (wordpress modules) - Shunshi Blog (shunshiseo.com)](https://www.shunshiseo.com/WordPress/93541.html)
+
+Open source projects for reference:
+
+[GitHub - WebStackPage/WebStackPage.github.io: ❤️Static Responsive Website Navigation - webstack.cc](https://github.com/WebStackPage/WebStackPage.github.io)
+
+For the WordPress version from the above open-source site:
+
+[GitHub - owen0o0/WebStack: WordPress Version WebStack Navigation Theme https://nav.iowen.cn](https://github.com/owen0o0/WebStack)

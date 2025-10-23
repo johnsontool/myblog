@@ -1,0 +1,69 @@
+---
+title: 'Batch Extract MP3 from MP4 Videos'
+date: '2024-01-20'
+tags: ['ffmpeg', 'video processing', 'batch script']
+draft: false
+summary: 'Learn how to batch extract audio from MP4 videos and convert them to MP3 format using FFmpeg and a simple Windows batch script.'
+layout: PostLayout
+images: ['/static/images/ocean.jpeg']
+---
+
+Extracting audio from multiple video files can be tedious if you do it manually one by one. Whether you’re archiving lectures, creating a music playlist from video files, or just need to separate soundtracks from MP4 videos, automation can save a lot of time.
+In this guide, you’ll learn how to **batch extract MP3 files from MP4 videos** using **FFmpeg** and a short **Windows batch script**—no manual conversion required.
+
+---
+
+## Tools
+
+* **FFmpeg** – a free, powerful command-line tool for audio and video processing
+* **Windows Batch Script** – to automate repetitive FFmpeg commands
+
+---
+
+## Steps
+
+1. **Install FFmpeg (Windows version)**
+
+   * Download the official FFmpeg build from [ffmpeg.org](https://ffmpeg.org/download.html).
+   * Add the `ffmpeg.exe` path to your Windows environment variables, or place it in the same directory as your videos.
+
+2. **Create a Batch Script**
+
+   * Open Notepad and paste the following script:
+
+     ```bash
+     @echo off
+     for %%a in (*.mp4) do (
+         ffmpeg -i "%%a" -vn -acodec libmp3lame -qscale:a 0 "%%~na.mp3"
+     )
+     ```
+   * Save the file as `extract_mp3.bat` in the same folder as your MP4 videos.
+
+3. **Run the Script**
+
+   * Double-click the `.bat` file.
+   * The script will loop through all `.mp4` files and extract their audio as `.mp3` in the same directory.
+
+---
+
+## How It Works
+
+* **@echo off** — Suppresses command output in the terminal window.
+* **for %%a in (*.mp4)** — Loops through every MP4 file in the current folder.
+* **ffmpeg -i "%%a"** — Specifies the input video file.
+* **-vn** — Excludes video output (audio only).
+* **-acodec libmp3lame** — Uses the LAME MP3 encoder.
+* **-qscale:a 0** — Sets the best audio quality (0 = highest).
+* **"%%~na.mp3"** — Names the output file after the original video, changing only the extension.
+
+---
+
+## Notes
+
+* You can adjust `-qscale:a` to balance file size and quality (e.g., `2` for medium quality).
+* For other audio formats (like `.wav` or `.aac`), simply replace the codec and file extension.
+* FFmpeg must be properly installed or located in the same directory for the script to run.
+
+---
+
+This simple workflow automates what would otherwise be a repetitive task. With FFmpeg and a batch file, you can convert entire folders of MP4 videos into MP3s in seconds — ideal for podcasting, music archiving, or quick audio extraction.
