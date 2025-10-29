@@ -1,0 +1,113 @@
+---
+title: 'Building custom domain email service with Cloudflare and Brevo'
+date: '2025-10-29'
+tags: ['Cloudflare', 'Brevo']
+draft: false
+summary: 'Learn how to set up a custom domain email service using Cloudflare for receiving and Brevo for sending emails, all integrated with Gmail.'
+layout: PostLayout
+images: ['/static/images/brevo-web.jpg']
+---
+
+When you register a domain, you usually want an email address with that domain suffix to send and receive professional-looking emails.
+
+As an example, I'll use my domain registered on Cloudflare to demonstrate how to set up an email service like contact@johnstool.net using Cloudflare + Brevo + Gmail.
+
+The email service includes both receiving and sending functionality. For receiving emails, you can use Cloudflare's free email routing service, which forwards all emails sent to contact@johnstool.net to my Gmail address.
+
+---
+
+### Step-by-Step Setup for Incoming Mail
+
+1. Log in to **Cloudflare Dashboard** → Email → *Email Routing*
+
+<img src="/static/images/image-20251029093303833.png" alt="image-20251029093303833" style={{ zoom: "50%" }} />
+
+2. Add a rule to configure a custom address (in my case, "contact@johnstool.net") and set the destination mailbox (for example, my Gmail).
+
+```text
+contact@johntool.net → mygmail@gmail.com
+```
+
+<img src="/static/images/image-20251029093816487.png" alt="image-20251029093816487" style={{ zoom: "50%" }} />
+
+3. Verify your destination address.
+
+4. Configure your DNS: You'll need to add a combination of MX and TXT records to your DNS for Email Routing to function properly.
+
+<img src="/static/images/image-20251029094125379.png" alt="image-20251029094125379" style={{ zoom: "50%" }} />
+
+5. Test by sending an email to `contact@johnstool.net` — it should land in your Gmail inbox.
+
+---
+
+### Step-by-Step Setup for Outgoing Mail
+
+Since Cloudflare can only forward emails but can't send them actively, you'll need a third-party mail service like [Brevo](https://www.brevo.com/).
+
+1. Go to [Brevo](https://www.brevo.com/) → sign up (free plan = 300 emails/day). Verify your email and phone number.
+
+2. In Brevo Dashboard → **Senders & IPs** → **Domains** → Add Domain, then choose to authenticate the domain yourself.
+
+```text
+johnstool.net
+```
+
+<img src="/static/images/image-20251029100918166.png" alt="image-20251029100918166" style={{ zoom: "80%" }} />
+
+<img src="/static/images/image-20251029101054318.png" alt="image-20251029101054318" style={{ zoom: "50%" }} />
+
+3. Brevo will provide you with **DNS records** (Brevo code, DKIM1, DKIM2, and DMARC).
+
+- Add these records in Cloudflare DNS. (Don't turn on proxy status for DKIM1 and DKIM2)
+- Once you've added all the records, click "Authenticate this email domain" in Brevo. It takes seconds to verify if everything is configured correctly.
+
+<img src="/static/images/domain-record.jpg" alt="domain-record" style={{ zoom: "50%" }} />
+
+---
+
+### Step-by-Step Configure Gmail "Send as"
+
+1. Open **Gmail** → **Settings** → See all settings, go to **Accounts and Import** tab, under *Send mail as*, click **Add another email address**,
+
+<img src="/static/images/image-20251029103311470.png" alt="image-20251029103311470" style={{ zoom: "50%" }} />
+
+then enter (in my case):
+
+- Name: johnson
+- Email: `contact@johnstool.net`
+- Uncheck *Treat as alias* if you want to keep Gmail and support mail separate.
+
+<img src="/static/images/image-20251029104327963.png" alt="image-20251029104327963" style={{ zoom: "50%" }} />
+
+SMTP Settings (you can get this information from *Brevo → Settings → SMTP & API*):
+
+<img src="/static/images/image-20251029105043996.png" alt="image-20251029105043996" style={{ zoom: "50%" }} />
+
+
+
+<img src="/static/images/image-20251029104810819.png" alt="image-20251029104810819" style={{ zoom: "50%" }} />
+
+Gmail will send a verification code to `contact@johnstool.net`.
+
+- Thanks to Cloudflare routing, it lands in your Gmail inbox.
+- Click the link and confirm.
+
+<img src="/static/images/image-20251029105445294.png" alt="image-20251029105445294" style={{ zoom: "50%" }} />
+
+2. Now open Gmail, go to **Compose**, choose `From:contact@johnstool.net` and send to another email address. After sending the email, check the recipient's inbox - it should show as coming from your domain, without "via Gmail" notation.
+
+<img src="/static/images/image-20251029191024789.png" alt="image-20251029191024789" style={{ zoom: "50%" }} />
+
+---
+
+### Conclusion
+
+All **incoming mail** → Cloudflare forwards to Gmail.
+
+All **outgoing mail** → Gmail uses Brevo SMTP, authenticated with SPF/DKIM.
+
+The limitation of this setup is that Brevo has a daily sending limit. The free plan only allows 300 emails per day. If you need more, you can upgrade to other plans:
+
+<img src="/static/images/image-20251029192034824.png" alt="image-20251029192034824" style={{ zoom: "50%" }} />
+
+If your domain is not hosted on Cloudflare, you can check if your domain registrar provides email forwarding services. If they do, you can use them directly; if not, you might consider migrating your domain to Cloudflare.
